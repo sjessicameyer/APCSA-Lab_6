@@ -1,9 +1,9 @@
 /** Heading  **********************************************/
-/*	Your name:
-		Class block: 				Date Started:
-		Lab Number:
-		Title:
-		Purpose:
+/*	Your name: Sarah Meyer
+		Class block: G				Date Started:1/1
+		Lab Number: 6
+		Title: Searching...
+		Purpose: Write a program that performs a linear search and a binary search on various arrays, and use the Arrays class.
 */
 import java.util.Scanner;
 import java.util.Arrays;
@@ -20,7 +20,7 @@ public class Lab_6{
 
     //linear search
     System.out.println("Linear Search:\n");
-    int[] array = setUpArray();
+    int[] array = setUpArray25();
     System.out.print("Original array of 25 elements:");
     displayArray(array);
 
@@ -32,7 +32,7 @@ public class Lab_6{
     //binary search
     System.out.print("\nBinary Search:\n\n Original array of 25 elements: ");
     displayArray(array);
-    System.out.print("\nSorted array of 24 elements:");
+    System.out.print("\nSorted array of 25 elements:");
     Arrays.sort(array);
     displayArray(array);
 
@@ -40,16 +40,20 @@ public class Lab_6{
     System.out.println("\nBuilt-in Binary Search:");
     for (var i=0; i<2; i++){
       System.out.print("\nWhat entry? ");
-      System.out.print(Arrays.binarySearch(array, input.nextInt()));
+      int location=Arrays.binarySearch(array, input.nextInt());
+      if (location>0)
+      System.out.print("  status: found at index "+location+".");
+      else
+      System.out.print("  status: not found.");
     }
 
-    System.out.println("\nMy iterative Binary Search:");
+    System.out.println("\n\nMy Iterative Binary Search:");
     for (var i=0; i<2; i++){
       System.out.print("\nWhat entry? ");
       iterBinSearch(array, input.nextInt());
     }
-
-    System.out.println("\nMy Recursive Binary Search:");
+    
+    System.out.println("\n\nMy Recursive Binary Search:");
     for (var i=0; i<2; i++){
       System.out.print("\nWhat entry? ");
       recBinSearch(array, input.nextInt(), 0, array.length);
@@ -73,52 +77,65 @@ public class Lab_6{
     return array;
   }
 
+  public int[] setUpArray25(){
+    int[] array = new int[25];
+    for(var i = 0;i<array.length;i++)
+      array[i]=(int)(Math.random()*100);
+    return array;
+  }
+
   public int linearSearch(int[] array, int num){
-    //FIX??
     int i = 0, location =-1;
+    if(array[i]==num)
+        location = i;
     while(array[i]!=num && i<array.length-1){
       i++;
       if(array[i]==num)
         location = i;
     }
-    System.out.print("  status: found at index "+location+" after "+(i+1)+" probes.");
+    System.out.println("  status: found at index "+location+" after "+(i+1)+" probes.");
     return i+1;
   }
 
   public int recBinSearch(int[] array, int num, int min, int max){
-    if(true){
-      //If you found the num, return!
-      System.out.println();
-    }if else(true){
-      //If all options have been exhausted, return also
-      System.out.println();
-    }else{
-      //Since options remain, recurse with the section of the list which is still a candidate
-    }
-    return 0;
-  }
-
-  public int iterBinSearch(int[] array, int num){
-    int min=0, max = array.length, mid= array.length/2, probes=0;
-    boolean terminate = false;
-    while(array[mid]!=num&&false==terminate){
-      if (array[mid]>num){
-        max=mid;
-        mid=(max-min)/2;
-      }
-      if (array[mid]<num){
-        min=mid;
-        mid=(max-min)/2;
-      }
+    int probes=0;
+    if (max >= min){
       probes++;
-      if (max-min==1)
-        terminate = true;
-    }
-    if(array[mid]==num){
-      System.out.println("  status: found at index "+mid+" after "+probes+" probes.");
+      int mid = (min+max) / 2;
+      if (array[mid] == num){
+        System.out.print("  status: found at index "+mid);
+      }else if (array[mid] > num){
+        probes=probes+recBinSearch(array, num, min, mid - 1);
+      }else{
+        probes=probes+recBinSearch(array, num, mid + 1, max);
+      }
     }else{
-      System.out.println("  status: not found after "+probes+" probes.");
+      System.out.print("  status: not found");
     }
+    if(max-min==array.length){
+      System.out.print(" after "+probes+" probes.");
+    }
+    return probes;
+  }
+  
+  public int iterBinSearch(int[] array, int num){
+    int min = 0, max = array.length - 1, location=-1,mid = (min+max)/2, probes=0;
+    while ((min <= max)&&(location==-1)) {
+      probes++;
+      mid = (min+max)/2;
+      if (array[mid] == num)
+        location = mid;
+      else if (array[mid] < num)
+        min = mid + 1;
+      else
+        max = mid - 1;
+    }
+
+    if (location!=-1)
+      System.out.print("  status: found at index "+location+" after "+probes+" probes.");
+    else
+      System.out.print("  status: not found after "+probes+" probes.");
+    
     return probes;
   }
 }
